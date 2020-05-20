@@ -40,7 +40,7 @@ Vue.component("nav-tag", {
           subclass: [
             {
               name: "Email",
-              infos: ["Get in touch with us", "Get a free audlit"],
+              infos: ["Get in touch with us", "Get a free audit"],
             },
             {
               name: "Headuarter",
@@ -62,7 +62,6 @@ Vue.component("nav-tag", {
   methods: {
     setView(page) {
       eventBus.$emit("changePage", page);
-      console.log(page);
     },
   },
 });
@@ -70,7 +69,7 @@ Vue.component("header-tag", {
   template: `<div id="header" class="container">
               <div class="wrapper">
                 <div class="logo">
-                  <a href="javascript:;">{{logo.name}}</a>
+                  <a href="javascript:;" @click="setView">{{logo.name}}</a>
                 </div>
                 <div class="nav-toggle">
                   <div class="hamburger" @click="open()">
@@ -97,22 +96,28 @@ Vue.component("header-tag", {
   },
   methods: {
     open() {
-      const headerOpenTL = gsap.timeline();
-      headerOpenTL
+      gsap
+        .timeline()
         .to("#nav", 0, {
           css: { display: "block" },
         })
-        .to("body", 0, { css: { overflow: "hidden" } })
-        .to("#nav", 0.6, {
-          y: 0,
-        })
         .to(
-          ["#banner,#cases"],
+          "#nav",
           0.8,
           {
-            y: "50vh",
+            y: 0,
+            ease: "power4.out",
           },
-          "-.2"
+          "-=.3"
+        )
+        .to(
+          ["#banner,#cases,#approach-banner,#services-banner,#about-us-banner"],
+          0.4,
+          {
+            y: "50vh",
+            ease: "power4.out",
+          },
+          "-=.5"
         )
         .to(".hamburger span", 0.6, {
           delay: -1,
@@ -159,18 +164,18 @@ Vue.component("header-tag", {
         });
     },
     close() {
-      const headerCloseTL = gsap.timeline();
-      headerCloseTL
+      gsap
+        .timeline()
         .to("#nav", 0.6, {
           y: "-100vh",
         })
         .to(
-          ["#banner,#cases"],
-          0.8,
+          ["#banner,#cases,#approach-banner,#services-banner,#about-us-banner"],
+          0.5,
           {
             y: 0,
           },
-          "-.2"
+          "-=.7"
         )
         .to("#circle", 0.6, {
           delay: -0.6,
@@ -210,10 +215,12 @@ Vue.component("header-tag", {
           delay: -0.1,
           css: { display: "none" },
         })
-        .to("body", 0, { css: { overflow: "auto" } })
         .to("#nav", 0, {
           css: { display: "none" },
         });
+    },
+    setView() {
+      eventBus.$emit("changePage", "case-studies-page");
     },
   },
 });
@@ -260,9 +267,12 @@ Vue.component("case-studies-page", {
                       <h2>{{c.title}}</h2>
                     </div>
                     <div class="case-img">
-                      <img :src="c.img" :alt="c.title">
+                      <img :src="c.img" :alt="c.id">
                     </div>
-                  </div>
+                    </div>
+                    <div class="canvas case-canvas1"></div>
+                    <div class="canvas case-canvas2"></div>
+                    <div class="canvas case-canvas3"></div>
               </div>
             </div>`,
   data() {
@@ -316,129 +326,9 @@ Vue.component("case-studies-page", {
       ],
     };
   },
-  methods: {
-    open() {
-      const headerOpenTL = gsap.timeline();
-      headerOpenTL
-        .to("#nav", 0, {
-          css: { display: "block" },
-        })
-        .to("body", 0, { css: { overflow: "hidden" } })
-        .to("#nav", 0.6, {
-          y: 0,
-        })
-        .to(
-          ["#banner,#cases"],
-          0.8,
-          {
-            y: "50vh",
-          },
-          "-.2"
-        )
-        .to(".hamburger span", 0.6, {
-          delay: -1,
-          scaleX: 0,
-          transformOrigin: "50% 0%",
-          ease: "expo.inOut",
-        })
-        .to("#path_1", 0.4, {
-          delay: -0.6,
-          css: {
-            strokeDashoffset: 10,
-            strokeDasharray: 5,
-          },
-        })
-        .to("#path_2", 0.4, {
-          delay: -0.6,
-          css: {
-            strokeDashoffset: 10,
-            strokeDasharray: 20,
-          },
-        })
-        .to("#line_1", 0.4, {
-          delay: -0.6,
-          css: {
-            strokeDashoffset: 40,
-            strokeDasharray: 18,
-          },
-        })
-        .to("#circle", 0.6, {
-          delay: -0.8,
-          css: {
-            strokeDashoffset: 0,
-          },
-          ease: "expo.inOut",
-        })
-        .to(".hamburger-close", 1, {
-          delay: -0.8,
-          css: {
-            display: "block",
-            "z-index": 100,
-            opacity: 1,
-            visibility: "visible",
-          },
-        });
-    },
-    close() {
-      const headerCloseTL = gsap.timeline();
-      headerCloseTL
-        .to("#nav", 0.6, {
-          y: "-100vh",
-        })
-        .to(
-          ["#banner,#cases"],
-          0.8,
-          {
-            y: 0,
-          },
-          "-.2"
-        )
-        .to("#circle", 0.6, {
-          delay: -0.6,
-          css: {
-            strokeDashoffset: -193,
-            strokeDasharray: 227,
-          },
-        })
-        .to("#path_1", 0.4, {
-          delay: -0.6,
-          css: {
-            strokeDashoffset: 10,
-            strokeDasharray: 10,
-          },
-        })
-        .to("#path_2", 0.4, {
-          delay: -0.6,
-          css: {
-            strokeDashoffset: 10,
-            strokeDasharray: 10,
-          },
-        })
-        .to("#line_1", 0.4, {
-          delay: -0.6,
-          css: {
-            strokeDashoffset: 40,
-            strokeDasharray: 40,
-          },
-        })
-        .to(".hamburger span", 0.6, {
-          delay: -0.6,
-          scaleX: 1,
-          transformOrigin: "50% 0%",
-          ease: "expo.inOut",
-        })
-        .to(".hamburger-close", 0, {
-          delay: -0.1,
-          css: { display: "none" },
-        })
-        .to("#nav", 0, {
-          css: { display: "none" },
-        });
-    },
-  },
   mounted() {
-    const bannerTL = gsap.timeline();
-    bannerTL
+    gsap
+      .timeline()
       .from(".line span", 1.8, {
         autoAlpha: 0,
         y: 50,
@@ -456,14 +346,6 @@ Vue.component("case-studies-page", {
           amount: 0.4,
         },
       })
-      // .to(
-      //   ".line span",
-      //   0,
-      //   {
-      //     css: { color: "#000000" },
-      //   },
-      //   "-=1.3"
-      // )
       .to(".overlay-bottom", 2, {
         width: 0,
         ease: "expo.inOut",
@@ -482,7 +364,17 @@ Vue.component("case-studies-page", {
         stagger: {
           amount: 0.3,
         },
+      })
+      .to(".case-img img", 2, { css: { display: "none" } });
+    for (let i = 0; i < this.cases.length; i++) {
+      new hoverEffect({
+        parent: document.querySelector(`.case-canvas${i + 1}`),
+        intensity: 0.3,
+        image1: this.cases[i].img,
+        image2: this.cases[i].img,
+        displacementImage: "./images/distortion.png",
       });
+    }
   },
 });
 Vue.component("approach-page", {
@@ -491,6 +383,12 @@ Vue.component("approach-page", {
               <div id="approach-banner">
                 <h1>{{title}}</h1>
                 <div class="content" v-for="content in contents">{{content.text}}</div>
+                <div class="scroll">
+                  <h2>{{scroll.text}}</h2>
+                  <svg :viewBox="scroll.icon.viewBox">
+                    <path :d="scroll.icon.d"/>
+                  </svg>
+                </div>
               </div>
             </div>`,
   data() {
@@ -500,39 +398,161 @@ Vue.component("approach-page", {
         { text: "We look for" },
         { text: "instinctive keys" },
         { text: "behind business" },
-        { text: "challenges" },
+        { text: "challenges." },
       ],
+      scroll: {
+        text: "Scroll Down",
+        icon: {
+          viewBox: "0 0 31.49 31.49",
+          d:
+            "M21.205,5.007c-0.429-0.444-1.143-0.444-1.587,0c-0.429,0.429-0.429,1.143,0,1.571l8.047,8.047H1.111 C0.492,14.626,0,15.118,0,15.737c0,0.619,0.492,1.127,1.111,1.127h26.554l-8.047,8.032c-0.429,0.444-0.429,1.159,0,1.587 c0.444,0.444,1.159,0.444,1.587,0l9.952-9.952c0.444-0.429,0.444-1.143,0-1.571L21.205,5.007z",
+        },
+      },
     };
   },
   mounted() {
-    const approachTL = gsap.timeline();
-    approachTL
+    gsap
+      .timeline()
       .to("#overlay1", 1, { opacity: 1, ease: "expo.inOut" })
-      .to("#overlay1", 0.5, { y: "100vh", ease: "expo.inOut" });
+      .to("#overlay1", 1, { y: "100vh", ease: "expo.inOut" })
+      .from(["#approach-banner h1,.content"], 1, {
+        autoAlpha: 0,
+        skewY: 7,
+        y: 50,
+        delay: 0.5,
+        ease: "power4.out",
+        stagger: { amount: 0.4 },
+        transformOrigin: "0 0",
+      })
+      .from([".scroll h2,.scroll svg"], 0.3, {
+        y: 20,
+        autoAlpha: 0,
+        delay: 0.3,
+        ease: "power4.out",
+        stagger: {
+          amount: 0.2,
+        },
+      });
   },
 });
 Vue.component("services-page", {
   template: `<div id="services">
               <div id="overlay1" class="container"></div>
-              施工中2
+              <div id="services-banner">
+                <h1>{{title}}</h1>
+                <div class="contents">
+                  <div class="content" v-for="content in contents">{{content.text}}</div><br>
+                </div>
+                <div class="scroll">
+                  <h2>{{scroll.text}}</h2>
+                  <svg :viewBox="scroll.icon.viewBox">
+                    <path :d="scroll.icon.d"/>
+                  </svg>
+                </div>
+              </div>
               </div>`,
+  data() {
+    return {
+      title: "Services",
+      contents: [
+        { text: "We offer a" },
+        { text: "tailor-made solution for" },
+        { text: "every project our" },
+        { text: "clients entrust us" },
+        { text: "with." },
+      ],
+      scroll: {
+        text: "Scroll Down",
+        icon: {
+          viewBox: "0 0 31.49 31.49",
+          d:
+            "M21.205,5.007c-0.429-0.444-1.143-0.444-1.587,0c-0.429,0.429-0.429,1.143,0,1.571l8.047,8.047H1.111 C0.492,14.626,0,15.118,0,15.737c0,0.619,0.492,1.127,1.111,1.127h26.554l-8.047,8.032c-0.429,0.444-0.429,1.159,0,1.587 c0.444,0.444,1.159,0.444,1.587,0l9.952-9.952c0.444-0.429,0.444-1.143,0-1.571L21.205,5.007z",
+        },
+      },
+    };
+  },
   mounted() {
-    const servicesTL = gsap.timeline();
-    servicesTL
+    gsap
+      .timeline()
       .to("#overlay1", 1, { opacity: 1, ease: "expo.inOut" })
-      .to("#overlay1", 0.5, { y: "100vh", ease: "expo.inOut" });
+      .to("#overlay1", 0.5, { y: "100vh", ease: "expo.inOut" })
+      .from(["#services-banner h1,.contents .content"], 2, {
+        autoAlpha: 0,
+        x: -20,
+        scaleY: 1.4,
+        ease: "power4.out",
+        stagger: { amount: 0.2 },
+      })
+      .from(
+        [".scroll h2,.scroll svg"],
+        1,
+        {
+          x: 20,
+          autoAlpha: 0,
+          ease: "power4.out",
+          stagger: {
+            amount: 0.1,
+          },
+        },
+        "-=0.5"
+      );
   },
 });
 Vue.component("about-us-page", {
   template: `<div id="about-us">
               <div id="overlay1" class="container"></div>
-              施工中3
+              <div id="about-us-banner">
+                <h1>{{title}}</h1>                
+                <div class="contents">
+                    <div class="content" v-for="content in contents">{{content.text}}</div><br>
+                  </div>
+                  <div class="scroll">
+                    <h2>{{scroll.text}}</h2>
+                    <svg :viewBox="scroll.icon.viewBox">
+                      <path :d="scroll.icon.d"/>
+                    </svg>
+                  </div>
+                </div>
               </div>`,
+  data() {
+    return {
+      title: "About us",
+      contents: [
+        { text: "We  are a team of" },
+        { text: "crazy pepole whose" },
+        { text: "obsession for" },
+        { text: "wonderful in branding" },
+        { text: "made us cross paths." },
+      ],
+      scroll: {
+        text: "Scroll Down",
+        icon: {
+          viewBox: "0 0 31.49 31.49",
+          d:
+            "M21.205,5.007c-0.429-0.444-1.143-0.444-1.587,0c-0.429,0.429-0.429,1.143,0,1.571l8.047,8.047H1.111 C0.492,14.626,0,15.118,0,15.737c0,0.619,0.492,1.127,1.111,1.127h26.554l-8.047,8.032c-0.429,0.444-0.429,1.159,0,1.587 c0.444,0.444,1.159,0.444,1.587,0l9.952-9.952c0.444-0.429,0.444-1.143,0-1.571L21.205,5.007z",
+        },
+      },
+    };
+  },
   mounted() {
-    const aboutUsTL = gsap.timeline();
-    aboutUsTL
+    gsap
+      .timeline()
       .to("#overlay1", 1, { opacity: 1, ease: "expo.inOut" })
-      .to("#overlay1", 0.5, { y: "100vh", ease: "expo.inOut" });
+      .to("#overlay1", 0.5, { y: "100vh", ease: "expo.inOut" })
+      .from("#about-us-banner", 1.5, {
+        autoAlpha: 0,
+        x: "50vh",
+        ease: "power4.out",
+      })
+      .from(
+        "#about-us-banner",
+        0.5,
+        {
+          scale: 0.95,
+          ease: "power4.out",
+        },
+        "-=.2"
+      );
   },
 });
 new Vue({
@@ -542,7 +562,6 @@ new Vue({
       view: "case-studies-page",
     };
   },
-  components: {},
   methods: {
     changePages() {
       eventBus.$on("changePage", (p) => {
@@ -553,7 +572,9 @@ new Vue({
             y: "-100vh",
           })
           .to(
-            ["#banner,#cases"],
+            [
+              "#banner,#cases,#approach-banner,#services-banner,#about-us-banner",
+            ],
             0.8,
             {
               y: 0,
