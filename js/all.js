@@ -69,7 +69,7 @@ Vue.component("header-tag", {
   template: `<div id="header" class="container">
               <div class="wrapper">
                 <div class="logo">
-                  <a href="javascript:;" @click="setView">{{logo.name}}</a>
+                  <a href="javascript:;" @click="setViewCaseStudies">{{logo.name}}</a>
                 </div>
                 <div class="nav-toggle">
                   <div class="hamburger" @click="open()">
@@ -77,11 +77,11 @@ Vue.component("header-tag", {
                   </div>
                   <div class="hamburger-close" @click="close()">
                     <svg>
-                      <g id="group_1" data-name="group 1" transform="translate(-152 -439)">
-                        <line id="line_1" data-name="line 1" y1="14.91" transform="translate(184 463.788)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"/>
-                        <path id="path_1" data-name="path 1" d="M6,9.155,10.949,5" transform="translate(173.051 458.302)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"/>
-                        <path id="path_2" data-name="path 2" d="M10.949,5,15.9,9.155" transform="translate(173.051 458.302)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"/>
-                        <g id="ellipse_1" data-name="ellipse 1" transform="translate(152 439)" fill="none" stroke="rgba(0,0,0,0.2)" stroke-width="2.5">
+                      <g id="group_1"  transform="translate(-152 -439)">
+                        <line id="line_1" y1="14.91" transform="translate(184 463.788)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"/>
+                        <path id="path_1" d="M6,9.155,10.949,5" transform="translate(173.051 458.302)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"/>
+                        <path id="path_2" d="M10.949,5,15.9,9.155" transform="translate(173.051 458.302)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"/>
+                        <g id="ellipse_1" transform="translate(152 439)" fill="none" stroke="rgba(0,0,0,0.2)" stroke-width="2.5">
                           <circle cx="32" cy="32" r="32" stroke="none"/>
                           <circle id="circle" cx="32" cy="32" r="30.75" fill="none"/>
                         </g>
@@ -98,62 +98,66 @@ Vue.component("header-tag", {
     open() {
       gsap
         .timeline()
-        .to("#nav", 0, {
-          css: { display: "block" },
+        .to("#nav", {
+          duration: 0.5,
+          css: {
+            display: "block",
+            visibility: "visible",
+            opacity: 1,
+            "z-index": 12,
+          },
+          ease: "power4.out",
         })
         .to(
-          "#nav",
-          0.8,
-          {
-            y: 0,
-            ease: "power4.out",
-          },
-          "-=.3"
-        )
-        .to(
           ["#banner,#cases,#approach-banner,#services-banner,#about-us-banner"],
-          0.4,
           {
+            duration: 0.4,
             y: "50vh",
             ease: "power4.out",
           },
           "-=.5"
         )
-        .to(".hamburger span", 0.6, {
+        .to(".hamburger span", {
+          duration: 0.6,
           delay: -1,
           scaleX: 0,
           transformOrigin: "50% 0%",
           ease: "expo.inOut",
         })
-        .to("#path_1", 0.4, {
+        .to("#path_1", {
+          duration: 0.4,
           delay: -0.6,
           css: {
             strokeDashoffset: 10,
             strokeDasharray: 5,
           },
         })
-        .to("#path_2", 0.4, {
+        .to("#path_2", {
+          duration: 0.4,
           delay: -0.6,
           css: {
             strokeDashoffset: 10,
             strokeDasharray: 20,
           },
         })
-        .to("#line_1", 0.4, {
+        .to("#line_1", {
+          duration: 0.5,
           delay: -0.6,
           css: {
             strokeDashoffset: 40,
             strokeDasharray: 18,
           },
         })
-        .to("#circle", 0.6, {
+        .to("#circle", {
+          duration: 0.6,
           delay: -0.8,
           css: {
             strokeDashoffset: 0,
           },
           ease: "expo.inOut",
         })
-        .to(".hamburger-close", 1, {
+        .to(".hamburger-close", {
+          duration: 1,
           delay: -0.8,
           css: {
             display: "block",
@@ -166,60 +170,91 @@ Vue.component("header-tag", {
     close() {
       gsap
         .timeline()
-        .to("#nav", 0.6, {
-          y: "-100vh",
+        .to("#nav", {
+          duration: 0.5,
+          css: {
+            display: "none",
+            visibility: "hidden",
+            opacity: 0,
+            "z-index": -2,
+          },
+          ease: "power4.out",
         })
         .to(
           ["#banner,#cases,#approach-banner,#services-banner,#about-us-banner"],
-          0.5,
           {
+            duration: 1,
             y: 0,
+            ease: "power4.out",
           },
-          "-=.7"
+          "-=.5"
         )
-        .to("#circle", 0.6, {
-          delay: -0.6,
-          css: {
-            strokeDashoffset: -193,
-            strokeDasharray: 227,
+        .to(
+          "#circle",
+          {
+            duration: 0.6,
+            delay: -0.6,
+            css: {
+              strokeDashoffset: -193,
+              strokeDasharray: 227,
+            },
           },
-        })
-        .to("#path_1", 0.4, {
-          delay: -0.6,
-          css: {
-            strokeDashoffset: 10,
-            strokeDasharray: 10,
+          "-=.4"
+        )
+        .to(
+          "#path_1",
+          {
+            duration: 0.4,
+            delay: -0.6,
+            css: {
+              strokeDashoffset: 10,
+              strokeDasharray: 10,
+            },
           },
-        })
-        .to("#path_2", 0.4, {
-          delay: -0.6,
-          css: {
-            strokeDashoffset: 10,
-            strokeDasharray: 10,
+          "-=.4"
+        )
+        .to(
+          "#path_2",
+          {
+            duration: 0.4,
+            delay: -0.6,
+            css: {
+              strokeDashoffset: 10,
+              strokeDasharray: 10,
+            },
           },
-        })
-        .to("#line_1", 0.4, {
-          delay: -0.6,
-          css: {
-            strokeDashoffset: 40,
-            strokeDasharray: 40,
+          "-=.4"
+        )
+        .to(
+          "#line_1",
+          {
+            duration: 0.4,
+            delay: -0.6,
+            css: {
+              strokeDashoffset: 40,
+              strokeDasharray: 40,
+            },
           },
-        })
-        .to(".hamburger span", 0.6, {
+          "-=.4"
+        )
+        .to(".hamburger span", {
+          duration: 0.6,
           delay: -0.6,
           scaleX: 1,
           transformOrigin: "50% 0%",
           ease: "expo.inOut",
         })
-        .to(".hamburger-close", 0, {
-          delay: -0.1,
-          css: { display: "none" },
-        })
-        .to("#nav", 0, {
-          css: { display: "none" },
-        });
+        .to(
+          ".hamburger-close",
+          {
+            duration: 0.3,
+            delay: -0.2,
+            css: { display: "none" },
+          },
+          "-=.2"
+        );
     },
-    setView() {
+    setViewCaseStudies() {
       eventBus.$emit("changePage", "case-studies-page");
     },
   },
@@ -240,7 +275,7 @@ Vue.component("case-studies-page", {
                     <span>{{content.text}}</span>
                   </div>
                   <div class="more">
-                    <a href="javascript:;">{{button.text}}
+                    <a href="javascript:;" @click="setViewAboutUs">{{button.text}}
                       <svg :viewBox="button.icon.viewBox">
                         <path :d="button.icon.d"/>
                       </svg>
@@ -326,10 +361,16 @@ Vue.component("case-studies-page", {
       ],
     };
   },
+  methods: {
+    setViewAboutUs() {
+      eventBus.$emit("changePage", "about-us-page");
+    },
+  },
   mounted() {
     gsap
       .timeline()
-      .from(".line span", 1.8, {
+      .from(".line span", {
+        duration: 1.8,
         autoAlpha: 0,
         y: 50,
         ease: "power4.out",
@@ -339,14 +380,16 @@ Vue.component("case-studies-page", {
           amount: 0.3,
         },
       })
-      .to(".overlay-top", 1.6, {
+      .to(".overlay-top", {
+        duration: 1.6,
         height: 0,
         ease: "expo.inOut",
         stagger: {
           amount: 0.4,
         },
       })
-      .to(".overlay-bottom", 2, {
+      .to(".overlay-bottom", {
+        duration: 2,
         width: 0,
         ease: "expo.inOut",
         delay: -0.8,
@@ -354,10 +397,12 @@ Vue.component("case-studies-page", {
           amount: 0.4,
         },
       })
-      .to("#overlay", 0, {
+      .to("#overlay", {
+        duration: 0,
         css: { display: "none", visibility: "hidden" },
       })
-      .from(".case-img img", 1.6, {
+      .from(".case-img img", {
+        duration: 1.6,
         scale: 1.4,
         ease: "expo.inOut",
         delay: -1.5,
@@ -365,7 +410,10 @@ Vue.component("case-studies-page", {
           amount: 0.3,
         },
       })
-      .to(".case-img img", 2, { css: { display: "none" } });
+      .to(".case-img img", {
+        duration: 2,
+        css: { display: "none" },
+      });
     for (let i = 0; i < this.cases.length; i++) {
       new hoverEffect({
         parent: document.querySelector(`.case-canvas${i + 1}`),
@@ -390,6 +438,43 @@ Vue.component("approach-page", {
                   </svg>
                 </div>
               </div>
+              <div id="approach-services-link">
+                <div class="wrapper">
+                  <aside>
+                    <div class="title">
+                      <h2>{{text}}</h2>
+                    </div>
+                    <div class="more">
+                      <a href="javascript:;" @click="setViewServices">{{button1.text}}
+                        <svg :viewBox="button1.icon.viewBox">
+                          <path :d="button1.icon.d"/>
+                        </svg>
+                      </a>
+                    </div>
+                  </aside>
+                  <aside>
+                    <div class="section" v-for="section in sections">
+                      <h1>{{section.title}}</h1>
+                      <p>{{section.paragraph}}</p>
+                    </div>
+                  </aside>
+                </div>
+              </div>
+              <div id="approach-next-page">
+                <div :class="wave.name" v-for="wave in waves">
+                  <img :src="wave.path" :alt="wave.name">
+                </div>
+                <div class="title">
+                  <h1>{{context}}</h1>
+                  <div class="more">
+                    <a href="javascript:;" @click="setViewServices">{{button2.text}}
+                      <svg :viewBox="button2.icon.viewBox">
+                        <path :d="button2.icon.d"/>
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>`,
   data() {
     return {
@@ -408,14 +493,62 @@ Vue.component("approach-page", {
             "M21.205,5.007c-0.429-0.444-1.143-0.444-1.587,0c-0.429,0.429-0.429,1.143,0,1.571l8.047,8.047H1.111 C0.492,14.626,0,15.118,0,15.737c0,0.619,0.492,1.127,1.111,1.127h26.554l-8.047,8.032c-0.429,0.444-0.429,1.159,0,1.587 c0.444,0.444,1.159,0.444,1.587,0l9.952-9.952c0.444-0.429,0.444-1.143,0-1.571L21.205,5.007z",
         },
       },
+      text: "What we do?",
+      button1: {
+        text: "Our Services",
+        icon: {
+          viewBox: "0 0 31.49 31.49",
+          d:
+            "M21.205,5.007c-0.429-0.444-1.143-0.444-1.587,0c-0.429,0.429-0.429,1.143,0,1.571l8.047,8.047H1.111 C0.492,14.626,0,15.118,0,15.737c0,0.619,0.492,1.127,1.111,1.127h26.554l-8.047,8.032c-0.429,0.444-0.429,1.159,0,1.587 c0.444,0.444,1.159,0.444,1.587,0l9.952-9.952c0.444-0.429,0.444-1.143,0-1.571L21.205,5.007z",
+        },
+      },
+      button2: {
+        text: "About us",
+        icon: {
+          viewBox: "0 0 31.49 31.49",
+          d:
+            "M21.205,5.007c-0.429-0.444-1.143-0.444-1.587,0c-0.429,0.429-0.429,1.143,0,1.571l8.047,8.047H1.111 C0.492,14.626,0,15.118,0,15.737c0,0.619,0.492,1.127,1.111,1.127h26.554l-8.047,8.032c-0.429,0.444-0.429,1.159,0,1.587 c0.444,0.444,1.159,0.444,1.587,0l9.952-9.952c0.444-0.429,0.444-1.143,0-1.571L21.205,5.007z",
+        },
+      },
+      sections: [
+        {
+          title: "Brand experiences",
+          paragraph:
+            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi dolores expedita porro earum fugiat consequatur vero deleniti obcaecati quasi? Repudiandae quo nesciunt quis ipsam laborum fuga asperiores soluta amet nam!",
+        },
+        {
+          title: "Exponential Growth",
+          paragraph:
+            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi dolores expedita porro earum fugiat consequatur vero deleniti obcaecati quasi? Repudiandae quo nesciunt quis ipsam laborum fuga asperiores soluta amet nam!",
+        },
+      ],
+      waves: [
+        { name: "wave1", path: "../images/wave1.svg" },
+        { name: "wave2", path: "../images/wave2.svg" },
+      ],
+      context: "Next Page",
     };
+  },
+  methods: {
+    setViewServices() {
+      eventBus.$emit("changePage", "services-page");
+    },
   },
   mounted() {
     gsap
       .timeline()
-      .to("#overlay1", 1, { opacity: 1, ease: "expo.inOut" })
-      .to("#overlay1", 1, { y: "100vh", ease: "expo.inOut" })
-      .from(["#approach-banner h1,.content"], 1, {
+      .to("#overlay1", {
+        duration: 1,
+        opacity: 1,
+        ease: "expo.inOut",
+      })
+      .to("#overlay1", {
+        duration: 1,
+        y: "100vh",
+        ease: "expo.inOut",
+      })
+      .from(["#approach-banner h1,.content"], {
+        duration: 1,
         autoAlpha: 0,
         skewY: 7,
         y: 50,
@@ -424,7 +557,8 @@ Vue.component("approach-page", {
         stagger: { amount: 0.4 },
         transformOrigin: "0 0",
       })
-      .from([".scroll h2,.scroll svg"], 0.3, {
+      .from([".scroll h2,.scroll svg"], {
+        duration: 0.3,
         y: 20,
         autoAlpha: 0,
         delay: 0.3,
@@ -433,6 +567,24 @@ Vue.component("approach-page", {
           amount: 0.2,
         },
       });
+
+    let tl = gsap.timeline();
+    let controller = new ScrollMagic.Controller();
+
+    tl.from(".wave1", {
+      duration: 2,
+      y: 300,
+      ease: "back.out",
+    }).from(".wave2", { duration: 1, y: 100, ease: "power4.out" });
+
+    new ScrollMagic.Scene({
+      triggerElement: "#approach-next-page",
+      triggerhook: 0,
+      offset: -100,
+      duration: "100%",
+    })
+      .setTween(tl)
+      .addTo(controller);
   },
 });
 Vue.component("services-page", {
@@ -474,9 +626,10 @@ Vue.component("services-page", {
   mounted() {
     gsap
       .timeline()
-      .to("#overlay1", 1, { opacity: 1, ease: "expo.inOut" })
-      .to("#overlay1", 0.5, { y: "100vh", ease: "expo.inOut" })
-      .from(["#services-banner h1,.contents .content"], 2, {
+      .to("#overlay1", { duration: 1, opacity: 1, ease: "expo.inOut" })
+      .to("#overlay1", 0.5, { duration: 0.5, y: "100vh", ease: "expo.inOut" })
+      .from(["#services-banner h1,.contents .content"], {
+        duration: 2,
         autoAlpha: 0,
         x: -20,
         scaleY: 1.4,
@@ -485,8 +638,8 @@ Vue.component("services-page", {
       })
       .from(
         [".scroll h2,.scroll svg"],
-        1,
         {
+          duration: 1,
           x: 20,
           autoAlpha: 0,
           ease: "power4.out",
@@ -494,7 +647,7 @@ Vue.component("services-page", {
             amount: 0.1,
           },
         },
-        "-=0.5"
+        "-=0.8"
       );
   },
 });
@@ -537,17 +690,18 @@ Vue.component("about-us-page", {
   mounted() {
     gsap
       .timeline()
-      .to("#overlay1", 1, { opacity: 1, ease: "expo.inOut" })
-      .to("#overlay1", 0.5, { y: "100vh", ease: "expo.inOut" })
-      .from("#about-us-banner", 1.5, {
+      .to("#overlay1", { duration: 1, opacity: 1, ease: "expo.inOut" })
+      .to("#overlay1", { duration: 0.5, y: "100vh", ease: "expo.inOut" })
+      .from("#about-us-banner", {
+        duration: 1.5,
         autoAlpha: 0,
         x: "50vh",
         ease: "power4.out",
       })
       .from(
         "#about-us-banner",
-        0.5,
         {
+          duration: 0.5,
           scale: 0.95,
           ease: "power4.out",
         },
@@ -568,8 +722,9 @@ new Vue({
         this.view = p;
         gsap
           .timeline()
-          .to("#nav", 0.6, {
-            y: "-100vh",
+          .to("#nav", {
+            duration: 0,
+            css: { display: "none", visibility: "hidden", opacity: 0 },
           })
           .to(
             [
@@ -581,45 +736,48 @@ new Vue({
             },
             "-.2"
           )
-          .to("#circle", 0.6, {
+          .to("#circle", {
+            duration: 0.6,
             delay: -0.6,
             css: {
               strokeDashoffset: -193,
               strokeDasharray: 227,
             },
           })
-          .to("#path_1", 0.4, {
+          .to("#path_1", {
+            duration: 0.4,
             delay: -0.6,
             css: {
               strokeDashoffset: 10,
               strokeDasharray: 10,
             },
           })
-          .to("#path_2", 0.4, {
+          .to("#path_2", {
+            duration: 0.4,
             delay: -0.6,
             css: {
               strokeDashoffset: 10,
               strokeDasharray: 10,
             },
           })
-          .to("#line_1", 0.4, {
+          .to("#line_1", {
+            duration: 0.4,
             delay: -0.6,
             css: {
               strokeDashoffset: 40,
               strokeDasharray: 40,
             },
           })
-          .to(".hamburger span", 0.6, {
+          .to(".hamburger span", {
+            duration: 0.6,
             delay: -0.6,
             scaleX: 1,
             transformOrigin: "50% 0%",
             ease: "expo.inOut",
           })
-          .to(".hamburger-close", 0, {
+          .to(".hamburger-close", {
+            duration: 0,
             delay: -0.1,
-            css: { display: "none" },
-          })
-          .to("#nav", 0, {
             css: { display: "none" },
           });
       });
