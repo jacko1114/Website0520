@@ -750,7 +750,6 @@ Vue.component("services-page", {
       duration: 100,
     })
       .setTween(tl)
-      .addIndicators()
       .addTo(controller);
 
     for (let i = 1; i <= this.texts.length; i++) {
