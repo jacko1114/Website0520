@@ -99,23 +99,24 @@ Vue.component("header-tag", {
       gsap
         .timeline()
         .to("#nav", {
-          duration: 0.5,
+          duration: 0.3,
           css: {
             display: "block",
             visibility: "visible",
             opacity: 1,
-            "z-index": 12,
           },
           ease: "power4.out",
         })
         .to(
-          ["#banner,#cases,#approach-banner,#services-banner,#about-us-banner"],
+          [
+            "#banner,#cases,#approach-banner,#services-banner,#about-us-banner,#approach-services-link,#approach-next-page,#services-next-page",
+          ],
           {
-            duration: 0.4,
+            duration: 0.6,
             y: "50vh",
-            ease: "power4.out",
+            ease: "power1.out",
           },
-          "-=.5"
+          "-.2"
         )
         .to(".hamburger span", {
           duration: 0.6,
@@ -176,12 +177,13 @@ Vue.component("header-tag", {
             display: "none",
             visibility: "hidden",
             opacity: 0,
-            "z-index": -2,
           },
           ease: "power4.out",
         })
         .to(
-          ["#banner,#cases,#approach-banner,#services-banner,#about-us-banner"],
+          [
+            "#banner,#cases,#approach-banner,#services-banner,#about-us-banner,#approach-services-link,#approach-next-page,#services-next-page",
+          ],
           {
             duration: 1,
             y: 0,
@@ -573,15 +575,19 @@ Vue.component("approach-page", {
 
     tl.from(".wave1", {
       duration: 2,
-      y: 300,
+      y: 500,
       ease: "back.out",
-    }).from(".wave2", { duration: 1, y: 100, ease: "power4.out" });
+    }).from(".wave2", {
+      duration: 1,
+      y: 300,
+      ease: "power4.out",
+    });
 
     new ScrollMagic.Scene({
       triggerElement: "#approach-next-page",
       triggerhook: 0,
-      offset: -100,
-      duration: "100%",
+      offset: 50,
+      duration: "200%",
     })
       .setTween(tl)
       .addTo(controller);
@@ -602,7 +608,27 @@ Vue.component("services-page", {
                   </svg>
                 </div>
               </div>
-              </div>`,
+              <div id="services-running-text">
+                <div class="text" v-for="text in texts" :class="text.classname">
+                  <h1>{{text.text}}</h1>
+                </div>
+              </div>
+              <div id="services-next-page">
+                <div :class="wave.name" v-for="wave in waves">
+                  <img :src="wave.path" :alt="wave.name">
+                </div>
+                <div class="title">
+                  <h1>{{context}}</h1>
+                  <div class="more">
+                    <a href="javascript:;" @click="setViewAboutUs">{{button2.text}}
+                      <svg :viewBox="button2.icon.viewBox">
+                        <path :d="button2.icon.d"/>
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>`,
   data() {
     return {
       title: "Services",
@@ -621,7 +647,56 @@ Vue.component("services-page", {
             "M21.205,5.007c-0.429-0.444-1.143-0.444-1.587,0c-0.429,0.429-0.429,1.143,0,1.571l8.047,8.047H1.111 C0.492,14.626,0,15.118,0,15.737c0,0.619,0.492,1.127,1.111,1.127h26.554l-8.047,8.032c-0.429,0.444-0.429,1.159,0,1.587 c0.444,0.444,1.159,0.444,1.587,0l9.952-9.952c0.444-0.429,0.444-1.143,0-1.571L21.205,5.007z",
         },
       },
+      texts: [
+        {
+          classname: "text1",
+          text:
+            "Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy Jazzy",
+        },
+        //吸引人的、花俏的
+        {
+          classname: "text2",
+          text:
+            "Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical Allegorical",
+        },
+        //寓意的
+        {
+          classname: "text3",
+          text:
+            "Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral Cerebral",
+        },
+        //深思的
+        {
+          classname: "text4",
+          text:
+            "Kaleidoscopic Kaleidoscopic Kaleidoscopic Kaleidoscopic Kaleidoscopic Kaleidoscopic Kaleidoscopic Kaleidoscopic Kaleidoscopic Kaleidoscopic Kaleidoscopic Kaleidoscopic Kaleidoscopic Kaleidoscopic Kaleidoscopic Kaleidoscopic Kaleidoscopic Kaleidoscopic Kaleidoscopic",
+        },
+        //千變萬化的
+        {
+          classname: "text5",
+          text:
+            "Optimal Optimal Optimal Optimal Optimal Optimal Optimal Optimal Optimal Optimal Optimal Optimal Optimal Optimal Optimal Optimal  Optimal OptimalOptimal Optimal Optimal Optimal Optimal Optimal Optimal Optimal Optimal Optimal Optimal Optimal Optimal Optimal Optimal Optimal Optimal Optimal",
+        },
+      ],
+      button2: {
+        text: "About us",
+        icon: {
+          viewBox: "0 0 31.49 31.49",
+          d:
+            "M21.205,5.007c-0.429-0.444-1.143-0.444-1.587,0c-0.429,0.429-0.429,1.143,0,1.571l8.047,8.047H1.111 C0.492,14.626,0,15.118,0,15.737c0,0.619,0.492,1.127,1.111,1.127h26.554l-8.047,8.032c-0.429,0.444-0.429,1.159,0,1.587 c0.444,0.444,1.159,0.444,1.587,0l9.952-9.952c0.444-0.429,0.444-1.143,0-1.571L21.205,5.007z",
+        },
+      },
+      waves: [
+        { name: "wave1", path: "../images/wave1.svg" },
+        { name: "wave2", path: "../images/wave2.svg" },
+      ],
+      context: "Next Page",
     };
+  },
+  methods: {
+    setViewAboutUs() {
+      eventBus.$emit("changePage", "about-us-page");
+    },
   },
   mounted() {
     gsap
@@ -649,6 +724,58 @@ Vue.component("services-page", {
         },
         "-=0.8"
       );
+    let tl = gsap.timeline();
+    let controller = new ScrollMagic.Controller();
+
+    let cw = document.body.clientWidth;
+    if (cw >= 1024) {
+      args = {};
+    } else if (cw > 768) {
+      arg = {};
+    } else {
+    }
+    tl.from(".wave1", {
+      duration: 2,
+      y: 500,
+      ease: "power1.out",
+    }).from(".wave2", {
+      duration: 2,
+      y: 100,
+      ease: "power1.out",
+    });
+    new ScrollMagic.Scene({
+      triggerElement: "#services-next-page",
+      triggerHook: 0.9,
+      offset: 350,
+      duration: 100,
+    })
+      .setTween(tl)
+      .addIndicators()
+      .addTo(controller);
+
+    for (let i = 1; i <= this.texts.length; i++) {
+      if (i % 2) {
+        var GSAP = gsap.fromTo(
+          `.text${i}`,
+          { x: "150vw" },
+          { x: "-150vw", duration: 4, ease: "power1.out" }
+        );
+      } else {
+        var GSAP = gsap.fromTo(
+          `.text${i}`,
+          { x: "-300vw" },
+          { x: "-150vw", duration: 4, ease: "power1.out" }
+        );
+      }
+      new ScrollMagic.Scene({
+        triggerElement: "#services-running-text",
+        triggerHook: 0.8,
+        offset: 200,
+        duration: "800",
+      })
+        .setTween(GSAP)
+        .addTo(controller);
+    }
   },
 });
 Vue.component("about-us-page", {
@@ -728,7 +855,7 @@ new Vue({
           })
           .to(
             [
-              "#banner,#cases,#approach-banner,#services-banner,#about-us-banner",
+              "#banner,#cases,#approach-banner,#services-banner,#about-us-banner,#approach-services-link,#approach-next-page",
             ],
             0.8,
             {
