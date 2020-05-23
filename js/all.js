@@ -382,9 +382,6 @@ Vue.component("case-studies-page", {
           amount: 0.3,
         },
       })
-      .to(["#overlay .top,#overlay .bottom"], {
-        css: { height: window.innerHeight / 2 },
-      })
       .to(".overlay-top", {
         duration: 1.6,
         height: 0,
@@ -914,5 +911,7 @@ new Vue({
   },
   mounted() {
     this.changePages();
+    let vh = window.innerHeight * 0.01;
+    document.documentElment.style.setProperty("--vh", `${vh}px`);
   },
 });
