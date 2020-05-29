@@ -15,7 +15,7 @@ Vue.component("nav-tag", {
                     <p>{{classification[1].name}}</p>
                   </div>
                   <div class="items">
-                    <div class="item" v-for="subclass in classification[1].subclass">
+                    <div class="item" v-for="(subclass,idx) in classification[1].subclass">
                       <h4>{{subclass.name}}</h4>
                       <a href="javascript:;" v-for="info in subclass.infos">{{info}}</a>
                     </div>
@@ -367,64 +367,68 @@ Vue.component("case-studies-page", {
     setViewAboutUs() {
       eventBus.$emit("changePage", "about-us-page");
     },
+    caseStudiesOverlayAnimation() {
+      gsap
+        .timeline()
+        .to(window, { duration: 0, scrollTo: 0 })
+        .from(".line span", {
+          duration: 1.8,
+          autoAlpha: 0,
+          y: 50,
+          ease: "power4.out",
+          delay: 1,
+          skewY: 7,
+          stagger: {
+            amount: 0.3,
+          },
+        })
+        .to(".overlay-top", {
+          duration: 1.6,
+          height: 0,
+          ease: "expo.inOut",
+          stagger: {
+            amount: 0.4,
+          },
+        })
+        .to(".overlay-bottom", {
+          duration: 2,
+          width: 0,
+          ease: "expo.inOut",
+          delay: -0.8,
+          stagger: {
+            amount: 0.4,
+          },
+        })
+        .to("#overlay", {
+          duration: 0,
+          css: { display: "none", visibility: "hidden" },
+        })
+        .from(".case-img img", {
+          duration: 1.6,
+          scale: 1.4,
+          ease: "expo.inOut",
+          delay: -1.5,
+          stagger: {
+            amount: 0.3,
+          },
+        })
+        .to(".case-img img", {
+          duration: 2,
+          css: { display: "none" },
+        });
+      for (let i = 0; i < this.cases.length; i++) {
+        new hoverEffect({
+          parent: document.querySelector(`.case-canvas${i + 1}`),
+          intensity: 0.3,
+          image1: this.cases[i].img,
+          image2: this.cases[i].img,
+          displacementImage: "./images/distortion.png",
+        });
+      }
+    },
   },
   mounted() {
-    gsap
-      .timeline()
-      .from(".line span", {
-        duration: 1.8,
-        autoAlpha: 0,
-        y: 50,
-        ease: "power4.out",
-        delay: 1,
-        skewY: 7,
-        stagger: {
-          amount: 0.3,
-        },
-      })
-      .to(".overlay-top", {
-        duration: 1.6,
-        height: 0,
-        ease: "expo.inOut",
-        stagger: {
-          amount: 0.4,
-        },
-      })
-      .to(".overlay-bottom", {
-        duration: 2,
-        width: 0,
-        ease: "expo.inOut",
-        delay: -0.8,
-        stagger: {
-          amount: 0.4,
-        },
-      })
-      .to("#overlay", {
-        duration: 0,
-        css: { display: "none", visibility: "hidden" },
-      })
-      .from(".case-img img", {
-        duration: 1.6,
-        scale: 1.4,
-        ease: "expo.inOut",
-        delay: -1.5,
-        stagger: {
-          amount: 0.3,
-        },
-      })
-      .to(".case-img img", {
-        duration: 2,
-        css: { display: "none" },
-      });
-    for (let i = 0; i < this.cases.length; i++) {
-      new hoverEffect({
-        parent: document.querySelector(`.case-canvas${i + 1}`),
-        intensity: 0.3,
-        image1: this.cases[i].img,
-        image2: this.cases[i].img,
-        displacementImage: "./images/distortion.png",
-      });
-    }
+    this.caseStudiesOverlayAnimation();
   },
 });
 Vue.component("approach-page", {
@@ -444,10 +448,10 @@ Vue.component("approach-page", {
                 <div class="wrapper">
                   <aside>
                     <div class="title">
-                      <h2>{{text}}</h2>
+                      <h2 ref="title">{{text}}</h2>
                     </div>
                     <div class="more">
-                      <a href="javascript:;" @click="setViewServices">{{button1.text}}
+                      <a href="javascript:;" @click="setViewServices" ref="button">{{button1.text}}
                         <svg :viewBox="button1.icon.viewBox">
                           <path :d="button1.icon.d"/>
                         </svg>
@@ -455,7 +459,7 @@ Vue.component("approach-page", {
                     </div>
                   </aside>
                   <aside>
-                    <div class="section" v-for="section in sections">
+                    <div class="section" v-for="section in sections" ref="section">
                       <h1>{{section.title}}</h1>
                       <p>{{section.paragraph}}</p>
                     </div>
@@ -535,62 +539,90 @@ Vue.component("approach-page", {
     setViewServices() {
       eventBus.$emit("changePage", "services-page");
     },
-  },
-  mounted() {
-    gsap
-      .timeline()
-      .to("#overlay1", {
-        duration: 1,
-        opacity: 1,
-        ease: "expo.inOut",
-      })
-      .to("#overlay1", {
-        duration: 1,
-        y: "100vh",
-        ease: "expo.inOut",
-      })
-      .from(["#approach-banner h1,.content"], {
-        duration: 1,
+    approachOverlayAnimation() {
+      gsap
+        .timeline()
+        .to(window, { duration: 0, scrollTo: 0 })
+        .to("#overlay1", {
+          duration: 1,
+          opacity: 1,
+          ease: "expo.inOut",
+        })
+        .to("#overlay1", {
+          duration: 1,
+          y: "100vh",
+          ease: "expo.inOut",
+        })
+        .from(["#approach-banner h1,.content"], {
+          duration: 1,
+          autoAlpha: 0,
+          skewY: 7,
+          y: 50,
+          delay: 0.5,
+          ease: "power4.out",
+          stagger: { amount: 0.4 },
+          transformOrigin: "0 0",
+        })
+        .from([".scroll h2,.scroll svg"], {
+          duration: 0.3,
+          y: 20,
+          autoAlpha: 0,
+          delay: 0.3,
+          ease: "power4.out",
+          stagger: {
+            amount: 0.2,
+          },
+        });
+    },
+    aheadServiceScrollAnimation() {
+      let tl = gsap.timeline();
+      let controller = new ScrollMagic.Controller();
+
+      tl.from([this.$refs.title, this.$refs.button], {
         autoAlpha: 0,
-        skewY: 7,
-        y: 50,
-        delay: 0.5,
-        ease: "power4.out",
-        stagger: { amount: 0.4 },
-        transformOrigin: "0 0",
-      })
-      .from([".scroll h2,.scroll svg"], {
-        duration: 0.3,
-        y: 20,
+        x: -50,
+        stagger: 0.4,
+      }).from(this.$refs.section, {
         autoAlpha: 0,
-        delay: 0.3,
-        ease: "power4.out",
-        stagger: {
-          amount: 0.2,
-        },
+        y: -100,
+        stagger: 0.3,
       });
 
-    let tl = gsap.timeline();
-    let controller = new ScrollMagic.Controller();
+      new ScrollMagic.Scene({
+        triggerElement: "#approach-services-link",
+        triggerHook: 0,
+      })
+        .setTween(tl)
+        .addTo(controller);
+    },
+    nextPageScrollAnimation() {
+      let tl = gsap.timeline();
+      let controller = new ScrollMagic.Controller();
 
-    tl.from(".wave1", {
-      duration: 2,
-      y: 500,
-      ease: "back.out",
-    }).from(".wave2", {
-      duration: 1,
-      y: 300,
-      ease: "power4.out",
-    });
+      tl.from(".wave1", {
+        duration: 2,
+        y: 200,
+        ease: "back.out",
+      }).from(".wave2", {
+        duration: 1,
+        y: 300,
+        ease: "power4.out",
+      });
 
-    new ScrollMagic.Scene({
-      triggerElement: "#approach-next-page",
-      triggerhook: 0,
-      offset: 50,
-      duration: "200%",
-    })
-      .setTween(tl)
-      .addTo(controller);
+      new ScrollMagic.Scene({
+        triggerElement: "#approach-next-page",
+        triggerHook: 0,
+        offset: 50,
+        duration: "200%",
+      })
+        .setTween(tl)
+        .addTo(controller);
+    },
+  },
+  mounted() {
+    this.approachOverlayAnimation();
+    this.aheadServiceScrollAnimation();
+    this.nextPageScrollAnimation();
   },
 });
 Vue.component("services-page", {
@@ -697,84 +729,87 @@ Vue.component("services-page", {
     setViewAboutUs() {
       eventBus.$emit("changePage", "about-us-page");
     },
+    serivcesOverlayAnimation() {
+      gsap
+        .timeline()
+        .to(window, { duration: 0, scrollTo: 0 })
+        .to("#overlay1", { duration: 1, opacity: 1, ease: "expo.inOut" })
+        .to("#overlay1", 0.5, { duration: 0.5, y: "100vh", ease: "expo.inOut" })
+        .from(["#services-banner h1,.contents .content"], {
+          duration: 2,
+          autoAlpha: 0,
+          x: -20,
+          scaleY: 1.4,
+          ease: "power4.out",
+          stagger: { amount: 0.2 },
+        })
+        .from(
+          [".scroll h2,.scroll svg"],
+          {
+            duration: 1,
+            x: 20,
+            autoAlpha: 0,
+            ease: "power4.out",
+            stagger: {
+              amount: 0.1,
+            },
+          },
+          "-=0.8"
+        );
+    },
+    nextPageScrollAnimation() {
+      let tl = gsap.timeline();
+      let controller = new ScrollMagic.Controller();
+
+      tl.from(".wave1", {
+        duration: 2,
+        y: 500,
+        ease: "power1.out",
+      }).from(".wave2", {
+        duration: 2,
+        y: 100,
+        ease: "power1.out",
+      });
+      new ScrollMagic.Scene({
+        triggerElement: "#services-next-page",
+        triggerHook: 0.9,
+        offset: 350,
+        duration: 100,
+      })
+        .setTween(tl)
+        .addTo(controller);
+    },
+    runningTextScrollAnimation() {
+      let controller = new ScrollMagic.Controller();
+      for (let i = 1; i <= this.texts.length; i++) {
+        if (i % 2) {
+          var GSAP = gsap.fromTo(
+            `.text${i}`,
+            { x: "150vw" },
+            { x: "-150vw", duration: 4, ease: "power1.out" }
+          );
+        } else {
+          var GSAP = gsap.fromTo(
+            `.text${i}`,
+            { x: "-300vw" },
+            { x: "-150vw", duration: 4, ease: "power1.out" }
+          );
+        }
+        new ScrollMagic.Scene({
+          triggerElement: "#services-running-text",
+          triggerHook: 0.8,
+          offset: 200,
+          duration: "800",
+        })
+          .setTween(GSAP)
+          .addTo(controller);
+      }
+    },
   },
   mounted() {
-    gsap
-      .timeline()
-      .to("#overlay1", { duration: 1, opacity: 1, ease: "expo.inOut" })
-      .to("#overlay1", 0.5, { duration: 0.5, y: "100vh", ease: "expo.inOut" })
-      .from(["#services-banner h1,.contents .content"], {
-        duration: 2,
-        autoAlpha: 0,
-        x: -20,
-        scaleY: 1.4,
-        ease: "power4.out",
-        stagger: { amount: 0.2 },
-      })
-      .from(
-        [".scroll h2,.scroll svg"],
-        {
-          duration: 1,
-          x: 20,
-          autoAlpha: 0,
-          ease: "power4.out",
-          stagger: {
-            amount: 0.1,
-          },
-        },
-        "-=0.8"
-      );
-    let tl = gsap.timeline();
-    let controller = new ScrollMagic.Controller();
-
-    let cw = document.body.clientWidth;
-    if (cw >= 1024) {
-      args = {};
-    } else if (cw > 768) {
-      arg = {};
-    } else {
-    }
-    tl.from(".wave1", {
-      duration: 2,
-      y: 500,
-      ease: "power1.out",
-    }).from(".wave2", {
-      duration: 2,
-      y: 100,
-      ease: "power1.out",
-    });
-    new ScrollMagic.Scene({
-      triggerElement: "#services-next-page",
-      triggerHook: 0.9,
-      offset: 350,
-      duration: 100,
-    })
-      .setTween(tl)
-      .addTo(controller);
-
-    for (let i = 1; i <= this.texts.length; i++) {
-      if (i % 2) {
-        var GSAP = gsap.fromTo(
-          `.text${i}`,
-          { x: "150vw" },
-          { x: "-150vw", duration: 4, ease: "power1.out" }
-        );
-      } else {
-        var GSAP = gsap.fromTo(
-          `.text${i}`,
-          { x: "-300vw" },
-          { x: "-150vw", duration: 4, ease: "power1.out" }
-        );
-      }
-      new ScrollMagic.Scene({
-        triggerElement: "#services-running-text",
-        triggerHook: 0.8,
-        offset: 200,
-        duration: "800",
-      })
-        .setTween(GSAP)
-        .addTo(controller);
-    }
+    this.serivcesOverlayAnimation();
+    this.nextPageScrollAnimation();
+    this.runningTextScrollAnimation();
   },
 });
 Vue.component("about-us-page", {
@@ -783,16 +818,43 @@ Vue.component("about-us-page", {
               <div id="about-us-banner">
                 <h1>{{title}}</h1>                
                 <div class="contents">
-                    <div class="content" v-for="content in contents">{{content.text}}</div><br>
+                    <div class="content" v-for="content in contents">{{content.text}}</div>
+                </div>
+                <div class="scroll">
+                  <h2>{{scroll.text}}</h2>
+                  <svg :viewBox="scroll.icon.viewBox">
+                    <path :d="scroll.icon.d"/>
+                  </svg>
+                </div>
+              </div>
+              <div id="about-us-teams">
+                <div v-for="person in people" class="person" :class="person.className">
+                  <div class="image">
+                    <img :src="person.imgpath" :alt="person.name">
                   </div>
-                  <div class="scroll">
-                    <h2>{{scroll.text}}</h2>
-                    <svg :viewBox="scroll.icon.viewBox">
-                      <path :d="scroll.icon.d"/>
-                    </svg>
+                  <div class="image_back" :style="{backgroundImage:'url('+person.imgpath_back+')'}">
+                  </div>
+                  <div class="info">
+                    <h3>{{person.name}}</h3>
+                    <p>{{person.title}}</p>
+                  </div>
+                  <div class="info_back">
+                    <h1>{{person.slogan}}</h1>
+                    <h2>{{person.name}}</h2>
+                  </div>
+                  <div class="skills">
+                    <div class="skill" v-for="skill in person.skills">
+                      <div class="item">
+                        <p>{{skill.skill}}</p>
+                      </div>
+                      <div class="number">
+                        <span :style="{width:skill.percent}"></span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>`,
+              </div>
+            </div>`,
   data() {
     return {
       title: "About us",
@@ -811,28 +873,495 @@ Vue.component("about-us-page", {
             "M21.205,5.007c-0.429-0.444-1.143-0.444-1.587,0c-0.429,0.429-0.429,1.143,0,1.571l8.047,8.047H1.111 C0.492,14.626,0,15.118,0,15.737c0,0.619,0.492,1.127,1.111,1.127h26.554l-8.047,8.032c-0.429,0.444-0.429,1.159,0,1.587 c0.444,0.444,1.159,0.444,1.587,0l9.952-9.952c0.444-0.429,0.444-1.143,0-1.571L21.205,5.007z",
         },
       },
+      people: [
+        {
+          className: "person1",
+          name: "Amy Li",
+          title: "Adventure Photographer",
+          imgpath: "../images/person1.jpg",
+          imgpath_back: "../images/person1_back.jpg",
+          slogan: "''Boundaries can't limit you''",
+          skills: [
+            { skill: "HTML5", percent: "90%" },
+            { skill: "CSS", percent: "87%" },
+            { skill: "JS", percent: "60%" },
+            { skill: "PHP", percent: "43%" },
+            { skill: "PS", percent: "28%" },
+            { skill: "AI", percent: "25%" },
+            { skill: "AE", percent: "20%" },
+            { skill: "PR", percent: "16%" },
+          ],
+        },
+        {
+          className: "person2",
+          name: "Jacko Chen",
+          title: "Adventure Photographer",
+          imgpath: "../images/person2.jpg",
+          imgpath_back: "../images/person2_back.jpg",
+          slogan: "''There is an amazing power to carry around''",
+          skills: [
+            { skill: "HTML5", percent: "91%" },
+            { skill: "CSS", percent: "87%" },
+            { skill: "JS", percent: "67%" },
+            { skill: "PHP", percent: "33%" },
+            { skill: "PS", percent: "23%" },
+            { skill: "AI", percent: "18%" },
+            { skill: "AE", percent: "9%" },
+            { skill: "PR", percent: "6%" },
+          ],
+        },
+        {
+          className: "person3",
+          name: "Peter Liu",
+          title: "Free Lancing",
+          imgpath: "../images/person3.jpg",
+          imgpath_back: "../images/person3_back.jpg",
+          slogan:
+            "''Anything is where it should be, and anything makes sense''",
+          skills: [
+            { skill: "HTML5", percent: "20%" },
+            { skill: "CSS", percent: "17%" },
+            { skill: "JS", percent: "10%" },
+            { skill: "PHP", percent: "10%" },
+            { skill: "PS", percent: "24%" },
+            { skill: "AI", percent: "23%" },
+            { skill: "AE", percent: "10%" },
+          ],
+        },
+      ],
     };
   },
-  mounted() {
-    gsap
-      .timeline()
-      .to("#overlay1", { duration: 1, opacity: 1, ease: "expo.inOut" })
-      .to("#overlay1", { duration: 0.5, y: "100vh", ease: "expo.inOut" })
-      .from("#about-us-banner", {
-        duration: 1.5,
-        autoAlpha: 0,
-        x: "50vh",
-        ease: "power4.out",
-      })
-      .from(
-        "#about-us-banner",
-        {
-          duration: 0.5,
-          scale: 0.95,
+  methods: {
+    overlayAnimation() {
+      gsap
+        .timeline()
+        .to(window, { duration: 0, scrollTo: 0 })
+        .from("#overlay1", { duration: 1, opacity: 0, ease: "expo.inOut" })
+        .to("#overlay1", { duration: 0.5, y: "100vh", ease: "expo.inOut" })
+        .from("#about-us-banner", {
+          duration: 1.5,
+          autoAlpha: 0,
+          x: "50vh",
           ease: "power4.out",
+        })
+        .from(
+          "#about-us-banner",
+          {
+            duration: 0.5,
+            scale: 0.95,
+            ease: "power4.out",
+          },
+          "-=.2"
+        )
+        .from("#about-us-banner h1", {
+          duration: 0.3,
+          autoAlpha: 0,
+          ease: "power1.out",
+        })
+        .from(
+          ".content",
+          {
+            duration: 0.5,
+            autoAlpha: 0,
+            stagger: 0.25,
+            ease: "power1.out",
+          },
+          "-=0.2"
+        )
+        .from(
+          ".scroll",
+          {
+            duration: 0.3,
+            autoAlpha: 0,
+          },
+          "-=0.2"
+        );
+    },
+    mediaQueryWatcher(mediaQuery, callbackFn) {
+      let mq = window.matchMedia(mediaQuery);
+      mq.addListener((e) => {
+        return callbackFn(e.matches);
+      });
+      callbackFn(mq.matches);
+    },
+    person1ScrollAnimation() {
+      let controller = new ScrollMagic.Controller();
+      let tl = gsap.timeline({
+        defaults: {
+          ease: "power1.out",
+          duration: 2,
         },
-        "-=.2"
-      );
+      });
+
+      this.mediaQueryWatcher("(min-width:768px)", (matches) => {
+        if (matches) {
+          tl.to(".person1 .image img", {
+            width: "100%",
+            height: "102vh",
+          })
+            .from(".person1 .info", {
+              autoAlpha: 0,
+              delay: 0.3,
+            })
+            .to(".person1 .info", {
+              autoAlpha: 0,
+              delay: 0.2,
+            })
+            .to(".person1 .image_back", {
+              height: "102vh",
+              delay: 1,
+              duration: 5,
+            })
+            .from(".person1 .info_back", {
+              autoAlpha: 0,
+              delay: 0.3,
+            })
+            .to(".person1 .image img", {
+              autoAlpha: 0,
+            })
+            .to(".person1 .info_back", {
+              autoAlpha: 0,
+              delay: 0.3,
+              duration: 2,
+            })
+            .to(".person1 .image_back", {
+              width: "80vh",
+              height: "50vh",
+              left: "20%",
+              bottom: "20%",
+              delay: 0.5,
+            })
+            .from(".person1 .skills", {
+              autoAlpha: 0,
+              delay: 0.5,
+            })
+            .from(".person1 .skills .number span", {
+              width: 0,
+              delay: 3,
+            });
+        } else {
+          tl.to(".person1 .image img", {
+            width: "100%",
+            height: "102vh",
+          })
+            .from(".person1 .info", {
+              autoAlpha: 0,
+              delay: 0.3,
+            })
+            .to(".person1 .info", {
+              autoAlpha: 0,
+              delay: 0.2,
+            })
+            .to(".person1 .image_back", {
+              height: "102vh",
+              delay: 1,
+              duration: 5,
+            })
+            .from(".person1 .info_back", {
+              autoAlpha: 0,
+              delay: 0.3,
+            })
+            .to(".person1 .image img", {
+              autoAlpha: 0,
+            })
+            .to(".person1 .info_back", {
+              autoAlpha: 0,
+              delay: 0.3,
+              duration: 2,
+            })
+            .to(".person1 .image_back", {
+              height: "50vh",
+              top: 0,
+              left: 0,
+              delay: 0.5,
+            })
+            .fromTo(
+              ".person1 .skills",
+              {
+                autoAlpha: 0,
+              },
+              {
+                autoAlpha: 1,
+                duration: 0.5,
+                top: "55%",
+                left: "18%",
+              }
+            )
+            .from(".person1 .skills .number span", {
+              width: 0,
+              delay: 3,
+            });
+        }
+      });
+
+      new ScrollMagic.Scene({
+        triggerElement: ".person1",
+        triggerHook: 0,
+        offset: "10rem",
+        duration: "400%",
+      })
+        .setTween(tl)
+        .setPin(".person1")
+        .addTo(controller);
+    },
+    person2ScrollAnimation() {
+      let controller = new ScrollMagic.Controller();
+      let tl = gsap.timeline({ defaults: { ease: "power1.out" } });
+
+      this.mediaQueryWatcher("(min-width:768px)", (matches) => {
+        if (matches) {
+          tl.to(".person2 .image img", {
+            width: "100%",
+            height: "102vh",
+            duration: 1,
+          })
+            .from(".person2 .info", {
+              autoAlpha: 0,
+              delay: 0.3,
+              duration: 1,
+            })
+            .to(".person2 .info", {
+              autoAlpha: 0,
+              delay: 0.2,
+              duration: 1,
+            })
+            .to(".person2 .image_back", {
+              width: "100vw",
+              delay: 1,
+              duration: 5,
+            })
+            .from(".person2 .info_back", {
+              autoAlpha: 0,
+              delay: 0.3,
+              duration: 1,
+            })
+            .to(".person2 .image img", {
+              autoAlpha: 0,
+              duration: 1,
+            })
+            .to(".person2 .info_back", {
+              autoAlpha: 0,
+              delay: 0.3,
+              duration: 1,
+            })
+            .to(".person2 .image_back", {
+              width: "80vh",
+              height: "50vh",
+              left: "50%",
+              top: "25%",
+              delay: 0.8,
+              duration: 1.5,
+            })
+            .fromTo(
+              ".person2 .skills",
+              {
+                autoAlpha: 0,
+              },
+              {
+                autoAlpha: 1,
+                delay: 0.5,
+                top: "20%",
+                right: "65%",
+                duration: 2,
+              }
+            )
+            .from(".person2 .skills .number span", {
+              width: 0,
+              delay: 2,
+              stagger: 0.2,
+            });
+        } else {
+          tl.to(".person2 .image img", {
+            width: "100%",
+            height: "102vh",
+            duration: 1,
+          })
+            .from(".person2 .info", {
+              autoAlpha: 0,
+              delay: 0.3,
+              duration: 1,
+            })
+            .to(".person2 .info", {
+              autoAlpha: 0,
+              delay: 0.2,
+              duration: 1,
+            })
+            .to(".person2 .image_back", {
+              width: "100vw",
+              delay: 1,
+              duration: 5,
+            })
+            .from(".person2 .info_back", {
+              autoAlpha: 0,
+              delay: 0.3,
+              duration: 1,
+            })
+            .to(".person2 .image img", {
+              autoAlpha: 0,
+              duration: 1,
+            })
+            .to(".person2 .info_back", {
+              autoAlpha: 0,
+              delay: 0.3,
+              duration: 1,
+            })
+            .to(".person2 .image_back", {
+              height: "50vh",
+              top: 0,
+              left: 0,
+              delay: 0.8,
+              duration: 1.5,
+            })
+            .fromTo(
+              ".person2 .skills",
+              {
+                autoAlpha: 0,
+              },
+              {
+                autoAlpha: 1,
+                top: "55%",
+                left: "20%",
+                duration: 2,
+              }
+            )
+            .from(".person2 .skills .number span", {
+              width: 0,
+              delay: 2,
+              stagger: 0.2,
+            });
+        }
+      });
+
+      new ScrollMagic.Scene({
+        triggerElement: ".person2",
+        triggerHook: 0,
+        offset: "10rem",
+        duration: "400%",
+      })
+        .setTween(tl)
+        .setPin(".person2")
+        .addTo(controller);
+    },
+    person3ScrollAnimation() {
+      let controller = new ScrollMagic.Controller();
+      let tl = gsap.timeline({ defaults: { ease: "power1.out", duration: 1 } });
+
+      this.mediaQueryWatcher("(min-width:768px)", (matches) => {
+        if (matches) {
+          tl.to(".person3 .image img", {
+            width: "100%",
+            height: "102vh",
+          })
+            .from(".person3 .info", {
+              autoAlpha: 0,
+              delay: 0.3,
+            })
+            .to(".person3 .info", {
+              autoAlpha: 0,
+              delay: 0.2,
+            })
+            .to(".person3 .image_back", {
+              height: "102vh",
+              delay: 1,
+              duration: 2,
+            })
+            .from(".person3 .info_back", {
+              autoAlpha: 0,
+              delay: 0.3,
+            })
+            .to(".person3 .image img", {
+              autoAlpha: 0,
+            })
+            .to(".person3 .info_back", {
+              autoAlpha: 0,
+              delay: 0.3,
+            })
+            .to(".person3 .image_back", {
+              width: "80vh",
+              height: "50vh",
+              left: "10%",
+              bottom: "20%",
+              delay: 0.5,
+            })
+            .from(".person3 .skills", {
+              autoAlpha: 0,
+              delay: 0.5,
+              duration: 2,
+            })
+            .from(".person3 .skills .number span", {
+              width: 0,
+              delay: 0.5,
+            });
+        } else {
+          tl.to(".person3 .image img", {
+            width: "100%",
+            height: "102vh",
+          })
+            .from(".person3 .info", {
+              autoAlpha: 0,
+              delay: 0.3,
+            })
+            .to(".person3 .info", {
+              autoAlpha: 0,
+              delay: 0.2,
+            })
+            .to(".person3 .image_back", {
+              height: "102vh",
+              delay: 1,
+              duration: 2,
+            })
+            .from(".person3 .info_back", {
+              autoAlpha: 0,
+              delay: 0.3,
+            })
+            .to(".person3 .image img", {
+              autoAlpha: 0,
+            })
+            .to(".person3 .info_back", {
+              autoAlpha: 0,
+              delay: 0.3,
+            })
+            .to(".person3 .image_back", {
+              height: "50vh",
+              top: 0,
+              left: 0,
+              delay: 0.5,
+            })
+            .fromTo(
+              ".person3 .skills",
+              {
+                autoAlpha: 0,
+              },
+              {
+                autoAlpha: 1,
+                duration: 0.5,
+                top: "55%",
+                left: "20%",
+              }
+            )
+            .from(".person3 .skills .number span", {
+              width: 0,
+              delay: 0.5,
+            });
+        }
+      });
+
+      new ScrollMagic.Scene({
+        triggerElement: ".person3",
+        triggerHook: 0,
+        offset: "10rem",
+        duration: "400%",
+      })
+        .setTween(tl)
+        .setPin(".person3")
+        .addTo(controller);
+    },
+  },
+  mounted() {
+    this.overlayAnimation();
+    this.person1ScrollAnimation();
+    this.person2ScrollAnimation();
+    this.person3ScrollAnimation();
   },
 });
 new Vue({
@@ -911,7 +1440,5 @@ new Vue({
   },
   mounted() {
     this.changePages();
-    let vh = window.innerHeight * 0.01;
-    document.documentElment.style.setProperty("--vh", `${vh}px`);
   },
 });
