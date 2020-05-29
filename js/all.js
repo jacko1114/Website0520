@@ -70,6 +70,7 @@ Vue.component("header-tag", {
               <div class="wrapper">
                 <div class="logo">
                   <a href="javascript:;" @click="setViewCaseStudies">{{logo.name}}</a>
+                  <marquee :class="{'fade':logo.isFade}">{{logo.statement}}</marquee>
                 </div>
                 <div class="nav-toggle">
                   <div class="hamburger" @click="open()">
@@ -92,7 +93,14 @@ Vue.component("header-tag", {
               </div>
             </div>`,
   data() {
-    return { spanNumber: 2, logo: { name: "JACKO." } };
+    return {
+      spanNumber: 2,
+      logo: {
+        name: "JACKO.",
+        statement: " 個人練習作品    非商業用途 ",
+        isFade: false,
+      },
+    };
   },
   methods: {
     open() {
@@ -259,6 +267,19 @@ Vue.component("header-tag", {
     setViewCaseStudies() {
       eventBus.$emit("changePage", "case-studies-page");
     },
+  },
+  mounted() {
+    let time;
+    if (window.innerWidth >= 1024) {
+      time = 15000;
+    } else if (window.innerWidth >= 768) {
+      time = 10000;
+    } else {
+      time = 8000;
+    }
+    setTimeout(() => {
+      this.logo.isFade = true;
+    }, time);
   },
 });
 Vue.component("case-studies-page", {
