@@ -611,7 +611,7 @@ Vue.component("approach-page", {
 
       new ScrollMagic.Scene({
         triggerElement: "#approach-services-link",
-        triggerHook: 0,
+        triggerHook: 0.3,
       })
         .setTween(tl)
         .addTo(controller);
@@ -623,7 +623,7 @@ Vue.component("approach-page", {
       tl.from(".wave1", {
         duration: 2,
         y: 200,
-        ease: "back.out",
+        ease: "power1.out",
       }).from(".wave2", {
         duration: 1,
         y: 300,
@@ -632,9 +632,9 @@ Vue.component("approach-page", {
 
       new ScrollMagic.Scene({
         triggerElement: "#approach-next-page",
-        triggerHook: 0,
-        offset: 50,
-        duration: "200%",
+        triggerHook: 0.5,
+        offset: 200,
+        duration: "50%",
       })
         .setTween(tl)
         .addTo(controller);
@@ -816,15 +816,35 @@ Vue.component("services-page", {
             { x: "-150vw", duration: 4, ease: "power1.out" }
           );
         }
-        new ScrollMagic.Scene({
-          triggerElement: "#services-running-text",
-          triggerHook: 0.8,
-          offset: 200,
-          duration: "800",
-        })
-          .setTween(GSAP)
-          .addTo(controller);
+        this.mediaQueryWatcher("(min-width:768px)", function (matches) {
+          if (matches) {
+            new ScrollMagic.Scene({
+              triggerElement: "#services-running-text",
+              triggerHook: 0.8,
+              offset: 200,
+              duration: "150%",
+            })
+              .setTween(GSAP)
+              .addTo(controller);
+          } else {
+            new ScrollMagic.Scene({
+              triggerElement: "#services-running-text",
+              triggerHook: 0.8,
+              offset: 200,
+              duration: 800,
+            })
+              .setTween(GSAP)
+              .addTo(controller);
+          }
+        });
       }
+    },
+    mediaQueryWatcher(mediaQuery, callbackFn) {
+      let mq = window.matchMedia(mediaQuery);
+      mq.addListener((e) => {
+        return callbackFn(e.matches);
+      });
+      callbackFn(mq.matches);
     },
   },
   mounted() {
@@ -868,8 +888,12 @@ Vue.component("about-us-page", {
                       <div class="item">
                         <p>{{skill.skill}}</p>
                       </div>
-                      <div class="number">
-                        <span :style="{width:skill.percent}"></span>
+                      <div v-show="person.className !== 'person3'" class="number">
+                        <span :style="{width:skill.percent}">{{skill.percent}}</span>
+                      </div>
+                      <div v-show="person.className === 'person3'" class="number">
+                        <span class="bar" :style="{width:skill.percent}"></span>
+                        <span class="percent">{{skill.percent}}</span>
                       </div>
                     </div>
                   </div>
@@ -1048,7 +1072,7 @@ Vue.component("about-us-page", {
             .to(".person1 .image_back", {
               width: "80vh",
               height: "50vh",
-              left: "20%",
+              left: "10%",
               bottom: "20%",
               delay: 0.5,
             })
@@ -1309,7 +1333,7 @@ Vue.component("about-us-page", {
               delay: 0.5,
               duration: 2,
             })
-            .from(".person3 .skills .number span", {
+            .from(".person3 .skills .number .bar", {
               width: 0,
               delay: 0.5,
             });
@@ -1356,11 +1380,11 @@ Vue.component("about-us-page", {
               {
                 autoAlpha: 1,
                 duration: 0.5,
-                top: "55%",
+                top: "52%",
                 left: "20%",
               }
             )
-            .from(".person3 .skills .number span", {
+            .from(".person3 .skills .number .bar", {
               width: 0,
               delay: 0.5,
             });
