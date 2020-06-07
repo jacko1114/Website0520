@@ -469,10 +469,10 @@ Vue.component("approach-page", {
                 <div class="wrapper">
                   <aside>
                     <div class="title">
-                      <h2 ref="title">{{text}}</h2>
+                      <h2>{{text}}</h2>
                     </div>
                     <div class="more">
-                      <a href="javascript:;" @click="setViewServices" ref="button">{{button1.text}}
+                      <a href="javascript:;" @click="setViewServices" class="ahead-button">{{button1.text}}
                         <svg :viewBox="button1.icon.viewBox">
                           <path :d="button1.icon.d"/>
                         </svg>
@@ -480,7 +480,7 @@ Vue.component("approach-page", {
                     </div>
                   </aside>
                   <aside>
-                    <div class="section" v-for="section in sections" ref="section">
+                    <div class="section" v-for="section in sections">
                       <h1>{{section.title}}</h1>
                       <p>{{section.paragraph}}</p>
                     </div>
@@ -597,28 +597,27 @@ Vue.component("approach-page", {
     },
     aheadServiceScrollAnimation() {
       let tl = gsap.timeline();
-      let controller = new ScrollMagic.Controller();
 
-      tl.from([this.$refs.title, this.$refs.button], {
+      tl.from([".title h2", ".more .ahead-button"], {
         autoAlpha: 0,
         x: -50,
         stagger: 0.4,
-      }).from(this.$refs.section, {
+      }).from(".section", {
         autoAlpha: 0,
         y: -100,
         stagger: 0.3,
       });
 
-      new ScrollMagic.Scene({
-        triggerElement: "#approach-services-link",
-        triggerHook: 0.3,
-      })
-        .setTween(tl)
-        .addTo(controller);
+      ScrollTrigger.create({
+        animation: tl,
+        trigger: "#approach-services-link",
+        start: "top 80%",
+        end: "bottom 0",
+        toggleActions: "play none reverse reverse",
+      });
     },
     nextPageScrollAnimation() {
       let tl = gsap.timeline();
-      let controller = new ScrollMagic.Controller();
 
       tl.from(".wave1", {
         duration: 2,
@@ -630,14 +629,13 @@ Vue.component("approach-page", {
         ease: "power4.out",
       });
 
-      new ScrollMagic.Scene({
-        triggerElement: "#approach-next-page",
-        triggerHook: 0.5,
-        offset: 200,
-        duration: "50%",
-      })
-        .setTween(tl)
-        .addTo(controller);
+      ScrollTrigger.create({
+        animation: tl,
+        trigger: "#approach-next-page",
+        start: "top 50%",
+        scrub: true,
+        toggleActions: "play none reverse reverse",
+      });
     },
   },
   mounted() {
@@ -765,7 +763,7 @@ Vue.component("services-page", {
           stagger: { amount: 0.2 },
         })
         .from(
-          [".scroll h2,.scroll svg"],
+          [".scroll h2", ".scroll svg"],
           {
             duration: 1,
             x: 20,
@@ -780,62 +778,67 @@ Vue.component("services-page", {
     },
     nextPageScrollAnimation() {
       let tl = gsap.timeline();
-      let controller = new ScrollMagic.Controller();
-
       tl.from(".wave1", {
         duration: 2,
-        y: 500,
-        ease: "power1.out",
-      }).from(".wave2", {
-        duration: 2,
-        y: 100,
-        ease: "power1.out",
+        y: 700,
+        ease: "power3.out",
+      }).from(
+        ".wave2",
+        {
+          duration: 1,
+          y: 100,
+          ease: "power2.out",
+        },
+        "-=1"
+      );
+
+      ScrollTrigger.create({
+        animation: tl,
+        trigger: "#services-next-page",
+        start: "350px 90%",
+        end: "+=200",
+        toggleActions: "play reverse reverse reverse",
+        scrub: 1,
       });
-      new ScrollMagic.Scene({
-        triggerElement: "#services-next-page",
-        triggerHook: 0.9,
-        offset: 350,
-        duration: 100,
-      })
-        .setTween(tl)
-        .addTo(controller);
     },
     runningTextScrollAnimation() {
-      let controller = new ScrollMagic.Controller();
       for (let i = 1; i <= this.texts.length; i++) {
         if (i % 2) {
           var GSAP = gsap.fromTo(
             `.text${i}`,
-            { x: "150vw" },
-            { x: "-150vw", duration: 4, ease: "power1.out" }
+            { x: "150vw", autoAlpha: 0 },
+            { x: "-150vw", autoAlpha: 1, duration: 3, ease: "power1.out" }
           );
         } else {
           var GSAP = gsap.fromTo(
             `.text${i}`,
-            { x: "-300vw" },
-            { x: "-150vw", duration: 4, ease: "power1.out" }
+            { x: "-300vw", autoAlpha: 0 },
+            { x: "-150vw", autoAlpha: 1, duration: 3, ease: "power1.out" }
           );
         }
+
         this.mediaQueryWatcher("(min-width:768px)", function (matches) {
+          let configs;
           if (matches) {
-            new ScrollMagic.Scene({
-              triggerElement: "#services-running-text",
-              triggerHook: 0.8,
-              offset: 200,
-              duration: "150%",
-            })
-              .setTween(GSAP)
-              .addTo(controller);
+            configs = {
+              animation: GSAP,
+              trigger: "#services-running-text",
+              start: "200px 80%",
+              end: "bottom top",
+              scrub: 4,
+              toggleActions: "play none none reverse",
+            };
           } else {
-            new ScrollMagic.Scene({
-              triggerElement: "#services-running-text",
-              triggerHook: 0.8,
-              offset: 200,
-              duration: 800,
-            })
-              .setTween(GSAP)
-              .addTo(controller);
+            configs = {
+              animation: GSAP,
+              trigger: "#services-running-text",
+              start: "100px 80%",
+              end: "bottom top",
+              scrub: 3,
+              toggleActions: "play none none reverse",
+            };
           }
+          ScrollTrigger.create(configs);
         });
       }
     },
@@ -889,7 +892,7 @@ Vue.component("about-us-page", {
                         <p>{{skill.skill}}</p>
                       </div>
                       <div v-show="person.className !== 'person3'" class="number">
-                        <span :style="{width:skill.percent}">{{skill.percent}}</span>
+                        <span class="bar-percent" style="width:0%">{{skill.percent}}</span>
                       </div>
                       <div v-show="person.className === 'person3'" class="number">
                         <span class="bar" :style="{width:skill.percent}"></span>
@@ -952,7 +955,7 @@ Vue.component("about-us-page", {
             { skill: "PS", percent: "23%" },
             { skill: "AI", percent: "18%" },
             { skill: "AE", percent: "9%" },
-            { skill: "PR", percent: "6%" },
+            { skill: "PR", percent: "3%" },
           ],
         },
         {
@@ -964,13 +967,12 @@ Vue.component("about-us-page", {
           slogan:
             "''Anything is where it should be, and anything makes sense''",
           skills: [
-            { skill: "HTML5", percent: "20%" },
-            { skill: "CSS", percent: "17%" },
-            { skill: "JS", percent: "10%" },
-            { skill: "PHP", percent: "10%" },
-            { skill: "PS", percent: "24%" },
+            { skill: "HTML5", percent: "30%" },
+            { skill: "CSS", percent: "25%" },
+            { skill: "JS", percent: "17%" },
+            { skill: "PHP", percent: "53%" },
+            { skill: "PS", percent: "46%" },
             { skill: "AI", percent: "23%" },
-            { skill: "AE", percent: "10%" },
           ],
         },
       ],
@@ -1022,15 +1024,7 @@ Vue.component("about-us-page", {
           "-=0.2"
         );
     },
-    mediaQueryWatcher(mediaQuery, callbackFn) {
-      let mq = window.matchMedia(mediaQuery);
-      mq.addListener((e) => {
-        return callbackFn(e.matches);
-      });
-      callbackFn(mq.matches);
-    },
     person1ScrollAnimation() {
-      let controller = new ScrollMagic.Controller();
       let tl = gsap.timeline({
         defaults: {
           ease: "power1.out",
@@ -1038,368 +1032,321 @@ Vue.component("about-us-page", {
         },
       });
 
-      this.mediaQueryWatcher("(min-width:768px)", (matches) => {
-        if (matches) {
-          tl.to(".person1 .image img", {
-            width: "100%",
-            height: "102vh",
-          })
-            .from(".person1 .info", {
-              autoAlpha: 0,
-              delay: 0.3,
-            })
-            .to(".person1 .info", {
-              autoAlpha: 0,
-              delay: 0.2,
-            })
-            .to(".person1 .image_back", {
-              height: "102vh",
-              delay: 1,
-              duration: 5,
-            })
-            .from(".person1 .info_back", {
-              autoAlpha: 0,
-              delay: 0.3,
-            })
-            .to(".person1 .image img", {
-              autoAlpha: 0,
-            })
-            .to(".person1 .info_back", {
-              autoAlpha: 0,
-              delay: 0.3,
-              duration: 2,
-            })
-            .to(".person1 .image_back", {
-              width: "80vh",
-              height: "50vh",
-              left: "10%",
-              bottom: "20%",
-              delay: 0.5,
-            })
-            .from(".person1 .skills", {
-              autoAlpha: 0,
-              delay: 0.5,
-            })
-            .from(".person1 .skills .number span", {
-              width: 0,
-              delay: 3,
-            });
-        } else {
-          tl.to(".person1 .image img", {
-            width: "100%",
-            height: "102vh",
-          })
-            .from(".person1 .info", {
-              autoAlpha: 0,
-              delay: 0.3,
-            })
-            .to(".person1 .info", {
-              autoAlpha: 0,
-              delay: 0.2,
-            })
-            .to(".person1 .image_back", {
-              height: "102vh",
-              delay: 1,
-              duration: 5,
-            })
-            .from(".person1 .info_back", {
-              autoAlpha: 0,
-              delay: 0.3,
-            })
-            .to(".person1 .image img", {
-              autoAlpha: 0,
-            })
-            .to(".person1 .info_back", {
-              autoAlpha: 0,
-              delay: 0.3,
-              duration: 2,
-            })
-            .to(".person1 .image_back", {
-              height: "50vh",
-              top: 0,
-              left: 0,
-              delay: 0.5,
-            })
-            .fromTo(
-              ".person1 .skills",
-              {
-                autoAlpha: 0,
-              },
-              {
-                autoAlpha: 1,
-                duration: 0.5,
-                top: "55%",
-                left: "18%",
-              }
-            )
-            .from(".person1 .skills .number span", {
-              width: 0,
-              delay: 3,
-            });
+      tl.fromTo(
+        ".person1 .image img",
+        { width: "60%", height: "80%" },
+        {
+          width: "100%",
+          height: "102vh",
         }
-      });
+      )
+        .from(".person1 .info", {
+          autoAlpha: 0,
+          delay: 0.3,
+        })
+        .to(".person1 .info", {
+          autoAlpha: 0,
+          delay: 0.2,
+        })
+        .to(".person1 .image_back", {
+          height: "102vh",
+          delay: 1,
+          duration: 5,
+        })
+        .from(".person1 .info_back", {
+          autoAlpha: 0,
+          delay: 0.3,
+        })
+        .to(".person1 .image img", {
+          autoAlpha: 0,
+        })
+        .to(".person1 .info_back", {
+          autoAlpha: 0,
+          delay: 0.3,
+          duration: 2,
+        })
+        .to(".person1 .image_back", {
+          height: "50vh",
+          top: 0,
+          left: 0,
+          delay: 0.5,
+        })
+        .fromTo(
+          ".person1 .skills",
+          {
+            autoAlpha: 0,
+          },
+          {
+            autoAlpha: 1,
+            duration: 0.1,
+            top: "55%",
+            left: "5%",
+            onComplete() {
+              let span = document.querySelectorAll(
+                ".person1 .skills .number .bar-percent"
+              );
+              let counter = [
+                { var: 0 },
+                { var: 0 },
+                { var: 0 },
+                { var: 0 },
+                { var: 0 },
+                { var: 0 },
+                { var: 0 },
+                { var: 0 },
+              ];
+              let countNumber = [
+                { var: 90 },
+                { var: 87 },
+                { var: 60 },
+                { var: 43 },
+                { var: 28 },
+                { var: 25 },
+                { var: 20 },
+                { var: 16 },
+              ];
 
-      new ScrollMagic.Scene({
-        triggerElement: ".person1",
-        triggerHook: 0,
-        offset: "10rem",
-        duration: "400%",
-      })
-        .setTween(tl)
-        .setPin(".person1")
-        .addTo(controller);
+              gsap.from(".person1 .skills .number span", {
+                duration: 1.8,
+                autoAlpha: 0,
+                ease: "expo.out",
+              });
+              for (let i = 0; i < span.length; i++) {
+                gsap.to(counter[i], 2, {
+                  var: countNumber[i].var,
+                  ease: "expo.out",
+                  onUpdate() {
+                    span[i].textContent = `${Math.ceil(counter[i].var)}%`;
+                    span[i].style.width = `${Math.ceil(counter[i].var)}%`;
+                  },
+                });
+              }
+            },
+          }
+        );
+
+      ScrollTrigger.create({
+        animation: tl,
+        trigger: ".person1",
+        start: "10rem top",
+        end: "+=400%",
+        pin: true,
+        scrub: true,
+        anticipatePin: 1,
+      });
     },
     person2ScrollAnimation() {
-      let controller = new ScrollMagic.Controller();
       let tl = gsap.timeline({ defaults: { ease: "power1.out" } });
-
-      this.mediaQueryWatcher("(min-width:768px)", (matches) => {
-        if (matches) {
-          tl.to(".person2 .image img", {
-            width: "100%",
-            height: "102vh",
-            duration: 1,
-          })
-            .from(".person2 .info", {
-              autoAlpha: 0,
-              delay: 0.3,
-              duration: 1,
-            })
-            .to(".person2 .info", {
-              autoAlpha: 0,
-              delay: 0.2,
-              duration: 1,
-            })
-            .to(".person2 .image_back", {
-              width: "100vw",
-              delay: 1,
-              duration: 5,
-            })
-            .from(".person2 .info_back", {
-              autoAlpha: 0,
-              delay: 0.3,
-              duration: 1,
-            })
-            .to(".person2 .image img", {
-              autoAlpha: 0,
-              duration: 1,
-            })
-            .to(".person2 .info_back", {
-              autoAlpha: 0,
-              delay: 0.3,
-              duration: 1,
-            })
-            .to(".person2 .image_back", {
-              width: "80vh",
-              height: "50vh",
-              left: "50%",
-              top: "25%",
-              delay: 0.8,
-              duration: 1.5,
-            })
-            .fromTo(
-              ".person2 .skills",
-              {
-                autoAlpha: 0,
-              },
-              {
-                autoAlpha: 1,
-                delay: 0.5,
-                top: "20%",
-                right: "65%",
-                duration: 2,
-              }
-            )
-            .from(".person2 .skills .number span", {
-              width: 0,
-              delay: 2,
-              stagger: 0.2,
-            });
-        } else {
-          tl.to(".person2 .image img", {
-            width: "100%",
-            height: "102vh",
-            duration: 1,
-          })
-            .from(".person2 .info", {
-              autoAlpha: 0,
-              delay: 0.3,
-              duration: 1,
-            })
-            .to(".person2 .info", {
-              autoAlpha: 0,
-              delay: 0.2,
-              duration: 1,
-            })
-            .to(".person2 .image_back", {
-              width: "100vw",
-              delay: 1,
-              duration: 5,
-            })
-            .from(".person2 .info_back", {
-              autoAlpha: 0,
-              delay: 0.3,
-              duration: 1,
-            })
-            .to(".person2 .image img", {
-              autoAlpha: 0,
-              duration: 1,
-            })
-            .to(".person2 .info_back", {
-              autoAlpha: 0,
-              delay: 0.3,
-              duration: 1,
-            })
-            .to(".person2 .image_back", {
-              height: "50vh",
-              top: 0,
-              left: 0,
-              delay: 0.8,
-              duration: 1.5,
-            })
-            .fromTo(
-              ".person2 .skills",
-              {
-                autoAlpha: 0,
-              },
-              {
-                autoAlpha: 1,
-                top: "55%",
-                left: "20%",
-                duration: 2,
-              }
-            )
-            .from(".person2 .skills .number span", {
-              width: 0,
-              delay: 2,
-              stagger: 0.2,
-            });
+      tl.fromTo(
+        ".person2 .image img",
+        { width: "60%", height: "80%" },
+        {
+          width: "100%",
+          height: "102vh",
+          duration: 1,
         }
-      });
+      )
+        .from(".person2 .info", {
+          autoAlpha: 0,
+          delay: 0.3,
+          duration: 1,
+        })
+        .to(".person2 .info", {
+          autoAlpha: 0,
+          delay: 0.2,
+          duration: 1,
+        })
+        .to(".person2 .image_back", {
+          width: "100vw",
+          delay: 1,
+          duration: 5,
+        })
+        .from(".person2 .info_back", {
+          autoAlpha: 0,
+          delay: 0.3,
+          duration: 1,
+        })
+        .to(".person2 .image img", {
+          autoAlpha: 0,
+          duration: 1,
+        })
+        .to(".person2 .info_back", {
+          autoAlpha: 0,
+          delay: 0.3,
+          duration: 1,
+        })
+        .to(".person2 .image_back", {
+          height: "50vh",
+          top: 0,
+          left: 0,
+          delay: 0.8,
+          duration: 1.5,
+        })
+        .fromTo(
+          ".person2 .skills",
+          {
+            autoAlpha: 0,
+          },
+          {
+            autoAlpha: 1,
+            top: "55%",
+            left: "5%",
+            duration: 0.1,
+            onComplete() {
+              let span = document.querySelectorAll(
+                ".person2 .skills .number .bar-percent"
+              );
+              let counter = [
+                { var: 0 },
+                { var: 0 },
+                { var: 0 },
+                { var: 0 },
+                { var: 0 },
+                { var: 0 },
+                { var: 0 },
+                { var: 0 },
+              ];
+              let countNumber = [
+                { var: 91 },
+                { var: 87 },
+                { var: 67 },
+                { var: 33 },
+                { var: 23 },
+                { var: 18 },
+                { var: 9 },
+                { var: 3 },
+              ];
 
-      new ScrollMagic.Scene({
-        triggerElement: ".person2",
-        triggerHook: 0,
-        offset: "10rem",
-        duration: "400%",
-      })
-        .setTween(tl)
-        .setPin(".person2")
-        .addTo(controller);
+              gsap.from(".person2 .skills .number span", {
+                duration: 1.8,
+                autoAlpha: 0,
+                ease: "expo.out",
+              });
+              for (let i = 0; i < span.length; i++) {
+                gsap.to(counter[i], 2, {
+                  var: countNumber[i].var,
+                  ease: "expo.out",
+                  onUpdate() {
+                    span[i].textContent = `${Math.ceil(counter[i].var)}%`;
+                    span[i].style.width = `${Math.ceil(counter[i].var)}%`;
+                  },
+                });
+              }
+            },
+          }
+        );
+
+      ScrollTrigger.create({
+        animation: tl,
+        trigger: ".person2",
+        start: "10rem top",
+        end: "+=400%",
+        pin: true,
+        scrub: true,
+      });
     },
     person3ScrollAnimation() {
-      let controller = new ScrollMagic.Controller();
       let tl = gsap.timeline({ defaults: { ease: "power1.out", duration: 1 } });
 
-      this.mediaQueryWatcher("(min-width:768px)", (matches) => {
-        if (matches) {
-          tl.to(".person3 .image img", {
-            width: "100%",
-            height: "102vh",
-          })
-            .from(".person3 .info", {
-              autoAlpha: 0,
-              delay: 0.3,
-            })
-            .to(".person3 .info", {
-              autoAlpha: 0,
-              delay: 0.2,
-            })
-            .to(".person3 .image_back", {
-              height: "102vh",
-              delay: 1,
-              duration: 2,
-            })
-            .from(".person3 .info_back", {
-              autoAlpha: 0,
-              delay: 0.3,
-            })
-            .to(".person3 .image img", {
-              autoAlpha: 0,
-            })
-            .to(".person3 .info_back", {
-              autoAlpha: 0,
-              delay: 0.3,
-            })
-            .to(".person3 .image_back", {
-              width: "80vh",
-              height: "50vh",
-              left: "10%",
-              bottom: "20%",
-              delay: 0.5,
-            })
-            .from(".person3 .skills", {
-              autoAlpha: 0,
-              delay: 0.5,
-              duration: 2,
-            })
-            .from(".person3 .skills .number .bar", {
-              width: 0,
-              delay: 0.5,
-            });
-        } else {
-          tl.to(".person3 .image img", {
-            width: "100%",
-            height: "102vh",
-          })
-            .from(".person3 .info", {
-              autoAlpha: 0,
-              delay: 0.3,
-            })
-            .to(".person3 .info", {
-              autoAlpha: 0,
-              delay: 0.2,
-            })
-            .to(".person3 .image_back", {
-              height: "102vh",
-              delay: 1,
-              duration: 2,
-            })
-            .from(".person3 .info_back", {
-              autoAlpha: 0,
-              delay: 0.3,
-            })
-            .to(".person3 .image img", {
-              autoAlpha: 0,
-            })
-            .to(".person3 .info_back", {
-              autoAlpha: 0,
-              delay: 0.3,
-            })
-            .to(".person3 .image_back", {
-              height: "50vh",
-              top: 0,
-              left: 0,
-              delay: 0.5,
-            })
-            .fromTo(
-              ".person3 .skills",
-              {
-                autoAlpha: 0,
-              },
-              {
-                autoAlpha: 1,
-                duration: 0.5,
-                top: "52%",
-                left: "20%",
-              }
-            )
-            .from(".person3 .skills .number .bar", {
-              width: 0,
-              delay: 0.5,
-            });
+      tl.fromTo(
+        ".person3 .image img",
+        { width: "60%", height: "80%" },
+        {
+          width: "100%",
+          height: "102vh",
         }
-      });
+      )
+        .from(".person3 .info", {
+          autoAlpha: 0,
+          delay: 0.3,
+        })
+        .to(".person3 .info", {
+          autoAlpha: 0,
+          delay: 0.2,
+        })
+        .to(".person3 .image_back", {
+          height: "102vh",
+          delay: 1,
+          duration: 2,
+        })
+        .from(".person3 .info_back", {
+          autoAlpha: 0,
+          delay: 0.3,
+        })
+        .to(".person3 .image img", {
+          autoAlpha: 0,
+        })
+        .to(".person3 .info_back", {
+          autoAlpha: 0,
+          delay: 0.3,
+        })
+        .to(".person3 .image_back", {
+          height: "50vh",
+          top: 0,
+          left: 0,
+          delay: 0.5,
+        })
+        .fromTo(
+          ".person3 .skills",
+          {
+            autoAlpha: 0,
+          },
+          {
+            autoAlpha: 1,
+            duration: 0.1,
+            top: "52%",
+            left: "5%",
+            onComplete() {
+              let bar = document.querySelectorAll(
+                ".person3 .skills .number .bar"
+              );
+              let percent = document.querySelectorAll(
+                ".person3 .skills .number .percent"
+              );
+              let counter = [
+                { var: 0 },
+                { var: 0 },
+                { var: 0 },
+                { var: 0 },
+                { var: 0 },
+                { var: 0 },
+              ];
+              let countNumber = [
+                { var: 30 },
+                { var: 25 },
+                { var: 17 },
+                { var: 53 },
+                { var: 46 },
+                { var: 23 },
+              ];
 
-      new ScrollMagic.Scene({
-        triggerElement: ".person3",
-        triggerHook: 0,
-        offset: "10rem",
-        duration: "400%",
-      })
-        .setTween(tl)
-        .setPin(".person3")
-        .addTo(controller);
+              gsap.from(percent, {
+                duration: 1.8,
+                autoAlpha: 0,
+                ease: "expo.out",
+              });
+              for (let i = 0; i < bar.length; i++) {
+                gsap.to(counter[i], 2, {
+                  var: countNumber[i].var,
+                  ease: "expo.out",
+                  onUpdate() {
+                    percent[i].textContent = `${Math.ceil(counter[i].var)}%`;
+                    bar[i].style.width = `${Math.ceil(counter[i].var)}%`;
+                  },
+                });
+              }
+            },
+          }
+        );
+
+      ScrollTrigger.create({
+        animation: tl,
+        trigger: ".person3",
+        start: "10rem top",
+        end: "+=400%",
+        pin: true,
+        scrub: true,
+      });
     },
   },
   mounted() {
