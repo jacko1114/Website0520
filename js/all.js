@@ -285,10 +285,10 @@ Vue.component("header-tag", {
 Vue.component("case-studies-page", {
   template: `<div id="case-studies-page">
               <div id="overlay" class="container">
-                <div class="top" :style="windowInnerHeight">
+                <div class="top">
                   <div class="overlay-top" v-for="num in overlayTopNumber"></div>
                 </div>
-                <div class="bottom" :style="windowInnerHeight">
+                <div class="bottom">
                   <div class="overlay-bottom" v-for="num in overlayBottomNumber"></div>
                 </div>
               </div>
@@ -447,14 +447,14 @@ Vue.component("case-studies-page", {
         });
       }
     },
-  },
-  computed: {
     windowInnerHeight() {
-      return { height: `${Math.ceil(window.innerHeight / 2)}px` };
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
     },
   },
   mounted() {
     this.caseStudiesOverlayAnimation();
+    this.windowInnerHeight();
   },
 });
 Vue.component("approach-page", {
