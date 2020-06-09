@@ -285,10 +285,10 @@ Vue.component("header-tag", {
 Vue.component("case-studies-page", {
   template: `<div id="case-studies-page">
               <div id="overlay" class="container">
-                <div class="top">
+                <div class="top" :style="windowInnerHeight">
                   <div class="overlay-top" v-for="num in overlayTopNumber"></div>
                 </div>
-                <div class="bottom">
+                <div class="bottom" :style="windowInnerHeight">
                   <div class="overlay-bottom" v-for="num in overlayBottomNumber"></div>
                 </div>
               </div>
@@ -446,6 +446,11 @@ Vue.component("case-studies-page", {
           displacementImage: "./images/distortion.png",
         });
       }
+    },
+  },
+  computed: {
+    windowInnerHeight() {
+      return { height: `${Math.ceil(window.innerHeight / 2)}px` };
     },
   },
   mounted() {
